@@ -1,0 +1,47 @@
+{%- set default_monitoring_domain ='example.com' %}
+{%- set default_monitoring_whitelist =['0.0.0.0./0'] %}
+{%- set default_valut_address ='https://vault.ionos.example.com' -%}
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: global
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./clusters/{{ global_cluster_name }}/config
+  prune: true
+  force: false
+  commonMetadata:
+    labels:
+      cluster: "{{ global_cluster_name }}"
+  postBuild:
+    substitute:
+  ### General
+      global_cluster_name: "\"{{ global_cluster_name }}\""
+      global_stand_config_path: "./clusters/{{ global_cluster_name }}/config"
+      global_reconcilation_for_ks: "10m0s"
+  ### StorageClasses
+      global_StorageClass_Data_name: "\"{{ global_StorageClass_Data_name | default('cephfs-data') }}\""
+      global_StorageClass_General_name: "\"{{ global_StorageClass_General_name | default('cephfs-db') }}\""
+  ### Monitoring
+      global_grafana_enabled: "\"{{ global_grafana_enabled | default('false')}}\""
+      global_alertmanager_enabled: "\"{{ global_alertmanager_enabled | default('true') }}\""
+      global_alertmanager_storageSize: "\"{{ global_alertmanager_storageSize | default('10Gi') }}\""
+      global_prometheus_externalUrl:    "\"https://prometheus.monitoring.{{ global_cluster_name }}.{{ monitoring_domain | default(default_monitoring_domain) }}\""
+      global_alertmanager_externalUrl:  "\"https://alertmanager.monitoring.{{ global_cluster_name }}.{{ monitoring_domain | default(default_monitoring_domain) }}\""
+      global_prometheus_storageSize: "\"{{ global_prometheus_storageSize | default('20Gi') }}\""
+      global_prometheus_retention: "\"{{ prometheus_retention | default('7d') }}\""
+      global_monitoring_domain: "{{ global_monitoring_domain | default(default_monitoring_domain) }}"
+      global_monitoring_subdomain: "{{ global_cluster_name }}"
+      global_monitoring_nginx_whitelist: {{ global_monitoring_nginx_whitelist | default(default_monitoring_whitelist) }}
+      global_loki_storageSize: "\"{{ global_loki_storageSize | default('10Gi') }}\""
+      global_loki_retention_period: "\"{{ global_loki_retention_period | default('3d') }}\""
+  ### vault-secret-operator
+      global_vso_authMethod: "\"kubernetes\""
+      global_vso_kubernetesPath: "\"auth/{{ global_vso_kubernetesPath | default(global_cluster_name) }}\""
+      global_vso_address: "\"{{ vault_address | default(default_valut_address) }}\""
+

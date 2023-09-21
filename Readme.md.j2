@@ -1,0 +1,41 @@
+## add next notes:
+# if you want to prevent any overwrite of you cluster - create file 
+./lock in directory directory
+it will have affect to all subdirectories
+
+For example you have next structure:
+ ./{{global_cluster_name}}/
+    folder1/
+        file1.1
+        file1.2
+    folder2/
+        file2.1
+        folder2.2/
+            file_2.2.1
+    
+
+Example1:
+```
+ ./{{global_cluster_name}}/
+    lock                - will affect to all files
+    folder1/
+        file1.1
+        file1.2
+    folder2/
+        file2.1
+        folder2.2/
+            file_2.2.1
+```    
+
+Example2:
+```
+ ./{{global_cluster_name}}/
+    folder1/
+        lock                - will affect only in files and subdirectories inside `folder1`
+        file1.1
+        file1.2
+    folder2/
+        file2.1
+        folder2.2/
+            file_2.2.1
+```    

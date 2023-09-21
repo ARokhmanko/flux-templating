@@ -1,2 +1,0 @@
-# flux-templating
-flux templating 

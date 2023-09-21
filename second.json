@@ -1,0 +1,7 @@
+{
+    "global_cluster_name": "bbb",
+    "global_pattern_name": "test",
+    "global_grafana_enabled": "true",
+    "global_monitoring_nginx_whitelist": ["22.2.22.2/32", "1.1.1.1/32"],
+    "product_domain": "example.com"
+}
